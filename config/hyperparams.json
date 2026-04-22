@@ -1,0 +1,249 @@
+{
+  "_comment": "Per-(dataset, model, method) hyperparameters. Merged LR + \u03bb values.",
+  "qa": {
+    "bert-base-uncased": {
+      "shared": {
+        "attention_temperature": 1.75,
+        "query_lr_multiplier": 1
+      },
+      "CONCEPT_ENCODER": {
+        "lr": 1e-05,
+        "lambda_rank": 0.4
+      },
+      "REC_CBM": {
+        "lr": 1e-05,
+        "lambda_rank": 0.5,
+        "lambda_den": 0.3,
+        "lambda_spa": 0.8
+      }
+    },
+    "gpt2": {
+      "shared": {
+        "attention_temperature": 1.25,
+        "query_lr_multiplier": 1
+      },
+      "CONCEPT_ENCODER": {
+        "lr": 0.0001,
+        "lambda_rank": 0.4
+      },
+      "REC_CBM": {
+        "lr": 0.0001,
+        "lambda_rank": 0.3,
+        "lambda_den": 1.0,
+        "lambda_spa": 0.4
+      }
+    },
+    "roberta-base": {
+      "shared": {
+        "attention_temperature": 2.0,
+        "query_lr_multiplier": 1
+      },
+      "CONCEPT_ENCODER": {
+        "lr": 1e-05,
+        "lambda_rank": 0.6
+      },
+      "REC_CBM": {
+        "lr": 1e-05,
+        "lambda_rank": 0.1,
+        "lambda_den": 0.2,
+        "lambda_spa": 0.0
+      }
+    },
+    "t5-base": {
+      "shared": {
+        "attention_temperature": 1.5,
+        "query_lr_multiplier": 1
+      },
+      "CONCEPT_ENCODER": {
+        "lr": 0.0001,
+        "lambda_rank": 0.2
+      },
+      "REC_CBM": {
+        "lr": 0.0001,
+        "lambda_rank": 0.2,
+        "lambda_den": 0.6,
+        "lambda_spa": 0.0
+      }
+    },
+    "facebook/bart-base": {
+      "shared": {
+        "attention_temperature": 0.25,
+        "query_lr_multiplier": 1
+      },
+      "CONCEPT_ENCODER": {
+        "lr": 2e-05,
+        "lambda_rank": 1.0
+      },
+      "REC_CBM": {
+        "lr": 2e-05,
+        "lambda_rank": 0.3,
+        "lambda_den": 1.0,
+        "lambda_spa": 0.2
+      }
+    }
+  },
+  "essay": {
+    "bert-base-uncased": {
+      "shared": {
+        "attention_temperature": 0.25,
+        "query_lr_multiplier": 1
+      },
+      "CONCEPT_ENCODER": {
+        "lr": 1e-05,
+        "lambda_rank": 0.2
+      },
+      "REC_CBM": {
+        "lr": 1e-05,
+        "lambda_rank": 0.5,
+        "lambda_den": 0.6,
+        "lambda_spa": 0.6
+      }
+    },
+    "gpt2": {
+      "shared": {
+        "attention_temperature": 1.0,
+        "query_lr_multiplier": 1
+      },
+      "CONCEPT_ENCODER": {
+        "lr": 1e-05,
+        "lambda_rank": 0.8
+      },
+      "REC_CBM": {
+        "lr": 0.0001,
+        "lambda_rank": 0.3,
+        "lambda_den": 0.8,
+        "lambda_spa": 0.0
+      }
+    },
+    "roberta-base": {
+      "shared": {
+        "attention_temperature": 1.0,
+        "query_lr_multiplier": 1
+      },
+      "CONCEPT_ENCODER": {
+        "lr": 1e-06,
+        "lambda_rank": 0.4
+      },
+      "REC_CBM": {
+        "lr": 1e-05,
+        "lambda_rank": 0.1,
+        "lambda_den": 1.0,
+        "lambda_spa": 0.4
+      }
+    },
+    "t5-base": {
+      "shared": {
+        "attention_temperature": 0.75,
+        "query_lr_multiplier": 1
+      },
+      "CONCEPT_ENCODER": {
+        "lr": 0.0001,
+        "lambda_rank": 0.6
+      },
+      "REC_CBM": {
+        "lr": 0.0001,
+        "lambda_rank": 0.2,
+        "lambda_den": 0.8,
+        "lambda_spa": 0.2
+      }
+    },
+    "facebook/bart-base": {
+      "shared": {
+        "attention_temperature": 0.25,
+        "query_lr_multiplier": 1
+      },
+      "CONCEPT_ENCODER": {
+        "lr": 1e-05,
+        "lambda_rank": 0.3
+      },
+      "REC_CBM": {
+        "lr": 2e-05,
+        "lambda_rank": 0.3,
+        "lambda_den": 0.6,
+        "lambda_spa": 0.0
+      }
+    }
+  },
+  "mocha": {
+    "bert-base-uncased": {
+      "shared": {
+        "attention_temperature": 1.75,
+        "query_lr_multiplier": 1
+      },
+      "CONCEPT_ENCODER": {
+        "lr": 1e-05,
+        "lambda_rank": 0.6
+      },
+      "REC_CBM": {
+        "lr": 1e-05,
+        "lambda_rank": 0.5,
+        "lambda_den": 0.8,
+        "lambda_spa": 0.0
+      }
+    },
+    "gpt2": {
+      "shared": {
+        "attention_temperature": 0.75,
+        "query_lr_multiplier": 1
+      },
+      "CONCEPT_ENCODER": {
+        "lr": 0.0001,
+        "lambda_rank": 0.6
+      },
+      "REC_CBM": {
+        "lr": 0.0001,
+        "lambda_rank": 0.3,
+        "lambda_den": 0.4,
+        "lambda_spa": 0.4
+      }
+    },
+    "roberta-base": {
+      "shared": {
+        "attention_temperature": 0.25,
+        "query_lr_multiplier": 1
+      },
+      "CONCEPT_ENCODER": {
+        "lr": 1e-05,
+        "lambda_rank": 0.8
+      },
+      "REC_CBM": {
+        "lr": 1e-05,
+        "lambda_rank": 0.1,
+        "lambda_den": 0.4,
+        "lambda_spa": 0.0
+      }
+    },
+    "t5-base": {
+      "shared": {
+        "attention_temperature": 1.0,
+        "query_lr_multiplier": 1
+      },
+      "CONCEPT_ENCODER": {
+        "lr": 0.0001,
+        "lambda_rank": 0.6
+      },
+      "REC_CBM": {
+        "lr": 0.0001,
+        "lambda_rank": 0.2,
+        "lambda_den": 0.2,
+        "lambda_spa": 0.6
+      }
+    },
+    "facebook/bart-base": {
+      "shared": {
+        "attention_temperature": 1.75,
+        "query_lr_multiplier": 1
+      },
+      "CONCEPT_ENCODER": {
+        "lr": 2e-05,
+        "lambda_rank": 1.0
+      },
+      "REC_CBM": {
+        "lr": 2e-05,
+        "lambda_rank": 0.3,
+        "lambda_den": 0.2,
+        "lambda_spa": 0.0
+      }
+    }
+  }
+}

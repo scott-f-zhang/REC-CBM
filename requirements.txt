@@ -1,0 +1,11 @@
+torch
+transformers
+gensim
+datasets
+pandas
+numpy
+scikit-learn
+tqdm
+
+streamlit
+plotly
