@@ -1,27 +1,5 @@
 # REC-CBM — Rubric-aware concept encoder with Latent Concept Error Correction
 
-REC-CBM is a two-stage concept-bottleneck framework for rubric-graded text.
-
-- **Stage I — Concept Encoder** (paper Fig 4.1(a)+(b)): a Rubric-Aware Concept
-  Encoder (attention over a concept query bank) trained with an ordinal
-  pairwise calibration objective (`L_rank`) in addition to per-concept
-  classification (`L_con`).
-- **Stage II — Grade Predictor** (paper Fig 4.1(c)): a Latent Concept Error
-  Correction (LCEC) head treats the observed concept scores as noisy
-  measurements of latent true concepts, learning a per-concept observation
-  noise and a precision matrix Ω, and producing a denoised posterior mean
-  μ_post for the linear grade classifier. Losses: `L_task`, `L_den`, `L_spa`.
-
-Two training strategies are provided:
-
-- **End-to-end** — joint-train backbone + concept encoder + LCEC head from
-  scratch (`train_one(method="REC_CBM")` in `cbm/training/trainer.py`).
-- **Residual 2-stage** — a pre-trained Stage I checkpoint is frozen, and an
-  additive LCEC correction head is trained on top (`run_stage2` in
-  `cbm/training/lcec.py`).
-
----
-
 ## Installation
 
 ```bash
