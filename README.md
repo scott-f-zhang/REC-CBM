@@ -1,58 +1,38 @@
-# REC-CBM — Rubric-aware concept encoder with Latent Concept Error Correction
+# REC-CBM: Rubric-aware Concept Encoder with Latent Concept Error Correction for Rubric-Graded Text Classification
 
-## Installation
+<p align="center">
+  <a href="TODO-paper-url"><img src="https://img.shields.io/badge/Paper-PDF-blue.svg" alt="Paper"></a>
+  <a href="TODO-arxiv-url"><img src="https://img.shields.io/badge/arXiv-TBD-b31b1b.svg" alt="arXiv"></a>
+  <a href="https://github.com/scott-f-zhang/REC-CBM"><img src="https://img.shields.io/badge/Code-GitHub-black.svg" alt="Code"></a>
+</p>
 
-```bash
-python -m venv .venv && source .venv/bin/activate
-pip install -r requirements.txt
-```
+## 🔭 Introduction
 
-Requires Python 3.9+ and PyTorch with CUDA for GPU training.
+Grading open-ended student responses with neural models typically trades interpretability for accuracy: a strong classifier offers no explanation for its grade, while a rubric-based interpretable system loses signal. Concept-bottleneck models (CBMs) close part of this gap by routing predictions through human-meaningful concepts, but existing CBMs are not rubric-aware — concept extractors ignore the structured criteria that human graders actually use, and the concept-to-grade mapping treats noisy concept estimates as if they were ground truth.
 
----
+**REC-CBM** addresses both issues. It introduces (a) a *Rubric-Aware Concept Encoder (RACE)* with per-concept attention queries over rubric-structured token representations, (b) an *Ordinal Pairwise Concept Calibration (OPCC)* objective that enforces the ordinal structure of rubric scores during concept learning, and (c) a *Latent Concept Error Correction (LCEC)* head that models each observed concept as a noisy measurement of a latent true concept and uses a Gaussian-posterior closed-form denoiser before the final grade classifier. The model is trained in two stages: Stage I fits the concept encoder; Stage II freezes Stage I and fits an additive residual LCEC correction.
 
-## Usage
+<p align="center">
+  <img src="assets/fig_1_1_grading_comparison.png" width="60%" />
+  <br/>
+  <em>Figure 1.1 — General grading systems vs. CBM-based rubric grading.</em>
+</p>
 
-```bash
-# Residual 2-stage on qa / gpt2 (auto-trains Stage I CONCEPT_ENCODER if absent)
-python main.py --dataset qa --model gpt2
-```
+## ✨ Contribution
 
-Supported values:
+- ⭐ **Rubric-Aware Concept Encoder (RACE)** — per-concept attention queries extract dedicated token-level evidence for each rubric criterion instead of routing every concept through a single pooled representation.
+- ⭐ **Ordinal Pairwise Concept Calibration (OPCC)** — a pairwise ranking loss `L_rank` added on top of per-concept classification `L_con` to enforce the ordinal structure of rubric scores.
+- ⭐ **Latent Concept Error Correction (LCEC)** — treats observed concept scores as noisy measurements of latent true concepts; learns a per-concept observation variance and a precision matrix Ω, and applies a closed-form Gaussian-posterior denoiser (`μ_post`) before the grade classifier.
+- ⭐ **Residual 2-stage training** — Stage I trains the concept encoder alone; Stage II freezes Stage I and fits a zero-initialised additive LCEC correction, so Stage II starts from the Stage I baseline and only improves on top of it.
+- ⭐ **Consistent empirical gains** across three rubric-graded benchmarks (Mohler short-answer / ASAP essay / MOCHA) and five pretrained backbones (BERT, GPT-2, RoBERTa, T5, BART).
 
-- `--dataset {qa, essay, mocha}`
-- `--model {bert-base-uncased, gpt2, roberta-base, t5-base, facebook/bart-base}`
-- `--seed <int>` — default `123`
+<p align="center">
+  <img src="assets/fig_4_1_framework.png" width="100%" />
+  <br/>
+  <em>Figure 4.1 — The REC-CBM framework. (a) Rubric-Aware Concept Encoder, (b) Ordinal Pairwise Concept Calibration, (c) Latent Concept Error Correction.</em>
+</p>
 
-Results are written to:
-
-```
-data/cbm_results_<dataset>/seed_<seed>/
-  concept_encoder/<dataset>/result_<dataset>.csv   # Stage I
-  rec_cbm_2stage/<dataset>/result_<dataset>.csv    # Stage II
-```
-
-Stage I hyperparameters (lr, attention_temperature, λ_rank, query_lr_multiplier)
-live in `config/hyperparams.json` and are loaded via
-`cbm.utils.hyperparams.get_method_params`. Stage II hyperparameters
-(lr, λ_den, λ_spa) live in `STAGE2_PARAMS` inside `cbm/training/lcec.py`.
-
----
-
-## Datasets
-
-Splits are bundled under `dataset/{qa,essay,mocha}/` and loaded via
-`cbm/data/{qa,essay,mocha}.py`.
-
-| Dataset | Concepts (K)                            | Task classes |
-|---------|-----------------------------------------|--------------|
-| qa      | FC, CC, TU, CP, R, DU, EE, FR (8)       | 6 (0–5)      |
-| essay   | TC, UE, OC, GM, VA, SV, CTD, FR (8)     | 6 (0–5)      |
-| mocha   | RQ, IA, TG, CR, PQ, C, CC (7)           | 5 (0–4)      |
-
----
-
-## Repo Layout
+## 🗂️ Repository Layout
 
 ```
 main.py                         # Single entry point — residual 2-stage
@@ -70,16 +50,54 @@ dataset/{qa,essay,mocha}/       # Train/dev/test splits
 cbm/data/{qa,essay,mocha}.py    # Torch datasets
 config/hyperparams.json         # Stage I hyperparameters per (dataset, model)
                                 # (lr, attention_temperature, λ_rank)
+assets/                         # Figures used by this README
 data/cbm_results_<dataset>/     # Training result CSVs (gitignored)
 ```
 
----
+## 📦 Installation
 
-## License
+```bash
+python -m venv .venv && source .venv/bin/activate
+pip install -r requirements.txt
+```
 
-Released under the MIT License — see `LICENSE`.
+Requires Python 3.9+ and PyTorch with CUDA for GPU training.
 
-## Citation
+## 🚀 Usage
+
+Residual 2-stage on `qa` / `gpt2` (auto-trains Stage I CONCEPT_ENCODER on first run and caches it under `saved_models/`; Stage II reuses the cached checkpoint afterwards):
+
+```bash
+python main.py --dataset qa --model gpt2
+```
+
+Supported values:
+
+- `--dataset {qa, essay, mocha}`
+- `--model {bert-base-uncased, gpt2, roberta-base, t5-base, facebook/bart-base}`
+- `--seed <int>` — default `123`
+
+Results are written to:
+
+```
+data/cbm_results_<dataset>/seed_<seed>/
+  concept_encoder/<dataset>/result_<dataset>.csv   # Stage I
+  rec_cbm_2stage/<dataset>/result_<dataset>.csv    # Stage II
+```
+
+Stage I hyperparameters (`lr`, `attention_temperature`, `λ_rank`, `query_lr_multiplier`) live in `config/hyperparams.json` and are loaded via `cbm.utils.hyperparams.get_method_params`. Stage II hyperparameters (`lr`, `λ_den`, `λ_spa`) live in `STAGE2_PARAMS` inside `cbm/training/lcec.py`.
+
+## 📊 Datasets
+
+Splits are bundled under `dataset/{qa,essay,mocha}/` and loaded via `cbm/data/{qa,essay,mocha}.py`.
+
+| Dataset | Concepts (K)                            | Task classes |
+|---------|-----------------------------------------|--------------|
+| qa      | FC, CC, TU, CP, R, DU, EE, FR (8)       | 6 (0–5)      |
+| essay   | TC, UE, OC, GM, VA, SV, CTD, FR (8)     | 6 (0–5)      |
+| mocha   | RQ, IA, TG, CR, PQ, C, CC (7)           | 5 (0–4)      |
+
+## 📝 Citation
 
 ```bibtex
 @article{reccbm2026,
@@ -89,3 +107,7 @@ Released under the MIT License — see `LICENSE`.
   year={2026}
 }
 ```
+
+## License
+
+Released under the MIT License — see `LICENSE`.
