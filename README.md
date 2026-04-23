@@ -97,7 +97,7 @@ REC-CBM is trained on three public grading benchmarks — Mohler short-answer (`
 | essay   | TC, UE, OC, GM, VA, SV, CTD, FR (8)     | 6 (0–5)      |
 | mocha   | RQ, IA, TG, CR, PQ, C, CC (7)           | 5 (0–4)      |
 
-We release only the **join keys + our concept annotations** on Hugging Face (raw text cannot be redistributed under the upstream licenses): **[scott-f-zhang/REC-CBM](https://huggingface.co/datasets/scott-f-zhang/REC-CBM)**. Download the upstream archives (ASAP 2.0 / Mohler / MOCHA) into `rawdata/` and run the release's `merge_with_raw.py` to rebuild the full train / dev / test splits expected by `cbm/data/{qa,essay,mocha}.py`.
+We release only the **join keys + our concept annotations** on [Hugging Face](https://huggingface.co/datasets/scott-f-zhang/REC-CBM) (raw text cannot be redistributed under the upstream licenses). Download the upstream archives (ASAP 2.0 / Mohler / MOCHA) into `rawdata/` and run the release's `merge_with_raw.py` to rebuild the full train / dev / test splits expected by `cbm/data/{qa,essay,mocha}.py`.
 
 ## 📝 Citation
 
