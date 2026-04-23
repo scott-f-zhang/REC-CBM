@@ -16,7 +16,7 @@ Grading open-ended student responses with neural models typically trades interpr
   <em>General grading systems vs. CBM-based rubric grading.</em>
 </p>
 
-**REC-CBM** addresses both issues by introducing RACE, OPCC, and LCEC — detailed below. The model is trained in two stages: Stage I fits the concept encoder; Stage II freezes Stage I and fits an additive residual LCEC correction.
+**REC-CBM** addresses both issues. It introduces: RACE, OPCC, and LCEC — detailed below. The model is trained in two stages: Stage I fits the concept encoder; Stage II freezes Stage I and fits an additive residual LCEC correction.
 
 <p align="center">
   <img src="assets/fig_4_1_framework.png" width="100%" />
