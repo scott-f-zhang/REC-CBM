@@ -10,6 +10,12 @@
 
 Grading open-ended student responses with neural models typically trades interpretability for accuracy: a strong classifier offers no explanation for its grade, while a rubric-based interpretable system loses signal. Concept-bottleneck models (CBMs) close part of this gap by routing predictions through human-meaningful concepts, but existing CBMs are not rubric-aware — concept extractors ignore the structured criteria that human graders actually use, and the concept-to-grade mapping treats noisy concept estimates as if they were ground truth.
 
+<p align="center">
+  <img src="assets/fig_1_1_grading_comparison.png" width="60%" />
+  <br/>
+  <em>General grading systems vs. CBM-based rubric grading.</em>
+</p>
+
 **REC-CBM** addresses both issues. It introduces 
 - (a) a *Rubric-Aware Concept Encoder (RACE)* with per-concept attention queries over rubric-structured token representations,
 - (b) an *Ordinal Pairwise Concept Calibration (OPCC)* objective that enforces the ordinal structure of rubric scores during concept learning, and
@@ -18,9 +24,9 @@ Grading open-ended student responses with neural models typically trades interpr
 The model is trained in two stages: Stage I fits the concept encoder; Stage II freezes Stage I and fits an additive residual LCEC correction.
 
 <p align="center">
-  <img src="assets/fig_1_1_grading_comparison.png" width="60%" />
+  <img src="assets/fig_4_1_framework.png" width="100%" />
   <br/>
-  <em>General grading systems vs. CBM-based rubric grading.</em>
+  <em>The REC-CBM framework.</em>
 </p>
 
 ## ✨ Contribution
@@ -30,12 +36,6 @@ The model is trained in two stages: Stage I fits the concept encoder; Stage II f
 - ⭐ **Latent Concept Error Correction (LCEC)** — treats observed concept scores as noisy measurements of latent true concepts; learns a per-concept observation variance and a precision matrix Ω, and applies a closed-form Gaussian-posterior denoiser (`μ_post`) before the grade classifier.
 - ⭐ **Residual 2-stage training** — Stage I trains the concept encoder alone; Stage II freezes Stage I and fits a zero-initialised additive LCEC correction, so Stage II starts from the Stage I baseline and only improves on top of it.
 - ⭐ **Consistent empirical gains** across three rubric-graded benchmarks (Mohler short-answer / ASAP essay / MOCHA) and five pretrained backbones (BERT, GPT-2, RoBERTa, T5, BART).
-
-<p align="center">
-  <img src="assets/fig_4_1_framework.png" width="100%" />
-  <br/>
-  <em>The REC-CBM framework.</em>
-</p>
 
 ## 🗂️ Repository Layout
 
