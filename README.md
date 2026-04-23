@@ -15,7 +15,7 @@ Grading open-ended student responses with neural models typically trades interpr
 <p align="center">
   <img src="assets/fig_1_1_grading_comparison.png" width="60%" />
   <br/>
-  <em>Figure 1.1 — General grading systems vs. CBM-based rubric grading.</em>
+  <em>General grading systems vs. CBM-based rubric grading.</em>
 </p>
 
 ## ✨ Contribution
@@ -29,7 +29,7 @@ Grading open-ended student responses with neural models typically trades interpr
 <p align="center">
   <img src="assets/fig_4_1_framework.png" width="100%" />
   <br/>
-  <em>Figure 4.1 — The REC-CBM framework. (a) Rubric-Aware Concept Encoder, (b) Ordinal Pairwise Concept Calibration, (c) Latent Concept Error Correction.</em>
+  <em>The REC-CBM framework. (a) Rubric-Aware Concept Encoder, (b) Ordinal Pairwise Concept Calibration, (c) Latent Concept Error Correction.</em>
 </p>
 
 ## 🗂️ Repository Layout
@@ -89,13 +89,15 @@ Stage I hyperparameters (`lr`, `attention_temperature`, `λ_rank`, `query_lr_mul
 
 ## 📊 Datasets
 
-Splits are bundled under `dataset/{qa,essay,mocha}/` and loaded via `cbm/data/{qa,essay,mocha}.py`.
+REC-CBM is trained on three public grading benchmarks — Mohler short-answer (`qa`), ASAP 2.0 essay (`essay`), and MOCHA (`mocha`) — each re-annotated with an ordinal rubric-concept inventory designed by three domain experts and labelled via a human-in-the-loop pipeline (GPT-4o + Gemini-2.5-pro propose → expert review, majority-vote disagreement resolution). Higher concept scores mean better, and levels are non-interpolated.
 
 | Dataset | Concepts (K)                            | Task classes |
 |---------|-----------------------------------------|--------------|
 | qa      | FC, CC, TU, CP, R, DU, EE, FR (8)       | 6 (0–5)      |
 | essay   | TC, UE, OC, GM, VA, SV, CTD, FR (8)     | 6 (0–5)      |
 | mocha   | RQ, IA, TG, CR, PQ, C, CC (7)           | 5 (0–4)      |
+
+We release only the **join keys + our concept annotations** on Hugging Face (raw text cannot be redistributed under the upstream licenses): **[scott-f-zhang/REC-CBM](https://huggingface.co/datasets/scott-f-zhang/REC-CBM)**. Download the upstream archives (ASAP 2.0 / Mohler / MOCHA) into `rawdata/` and run the release's `merge_with_raw.py` to rebuild the full train / dev / test splits expected by `cbm/data/{qa,essay,mocha}.py`.
 
 ## 📝 Citation
 
