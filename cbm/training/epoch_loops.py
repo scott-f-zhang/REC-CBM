@@ -99,7 +99,7 @@ def train_one_epoch(
                 if rank_losses:
                     loss = loss + lambda_rank * torch.stack(rank_losses).mean()
 
-            # ── Stage II LCEC losses (REC_CBM only) ──────────────────────────
+            # ── Stage II LCEC losses (residual head) ─────────────────────────
             if enable_lcec:
                 from ..models.models import LCECHead
                 lcec_model = head.concept_to_task_model

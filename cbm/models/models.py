@@ -318,35 +318,3 @@ def build_concept_encoder(
     )
 
 
-def build_rec_cbm(
-    num_concept_classes: int,
-    num_task_classes: int,
-    num_concepts: int,
-    hidden_dimension: int = 768,
-    use_independent_channels: bool = True,
-    attention_temperature: float = 1.0,
-    query_init_method: str = "orthogonal",
-    lcec_eps: float = 1e-4,
-) -> RecCBM:
-    """Build full REC-CBM: Stage I concept encoder + Stage II LCEC head (used by REC_CBM)."""
-    concept_extraction_model = RubricAwareConceptEncoder(
-        num_concept_classes=num_concept_classes,
-        num_concepts=num_concepts,
-        is_bottleneck_mode=True,
-        hidden_dimension=hidden_dimension,
-        use_independent_channels=use_independent_channels,
-        attention_temperature=attention_temperature,
-        query_init_method=query_init_method,
-    )
-    lcec_head = LCECHead(
-        num_concepts=num_concepts,
-        num_concept_classes=num_concept_classes,
-        num_task_classes=num_task_classes,
-        eps=lcec_eps,
-    )
-    return RecCBM(
-        concept_extraction_model=concept_extraction_model,
-        concept_to_task_model=lcec_head,
-        num_concepts=num_concepts,
-        num_concept_classes=num_concept_classes,
-    )

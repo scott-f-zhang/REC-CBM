@@ -43,7 +43,6 @@ def level1_imports() -> None:
 
     check(main.DATASETS == ("qa", "essay", "mocha"), f"main.DATASETS={main.DATASETS}")
     check(len(main.MODELS) == 5, f"main.MODELS has 5 entries, got {len(main.MODELS)}")
-    check(callable(main.run_e2e), "main.run_e2e is callable")
     check(callable(main.run_2stage), "main.run_2stage is callable")
     check(callable(train_one), "cbm.train_one is callable")
     check(callable(save_result_row), "cbm.save_result_row is callable")
@@ -56,7 +55,7 @@ def level1_cli() -> None:
         capture_output=True, text=True, cwd=REPO_ROOT,
     )
     check(result.returncode == 0, f"main.py --help exits 0 (got {result.returncode})")
-    for token in ("--dataset", "--model", "--mode", "e2e", "2stage"):
+    for token in ("--dataset", "--model", "--seed"):
         check(token in result.stdout, f"help text mentions '{token}'")
 
 
@@ -70,7 +69,7 @@ def level2_hyperparams_coverage() -> None:
     from cbm.training.trainer import VALID_METHODS, train_one
     from cbm.utils import get_method_params
 
-    assert VALID_METHODS == {"CONCEPT_ENCODER", "REC_CBM"}, f"VALID_METHODS={VALID_METHODS}"
+    assert VALID_METHODS == {"CONCEPT_ENCODER"}, f"VALID_METHODS={VALID_METHODS}"
     check(True, f"VALID_METHODS = {sorted(VALID_METHODS)}")
 
     sig = inspect.signature(train_one)
@@ -85,21 +84,17 @@ def level2_hyperparams_coverage() -> None:
 
     for dataset in datasets:
         for model in models:
-            for method in ("CONCEPT_ENCODER", "REC_CBM"):
-                hp = get_method_params(dataset, model, method)
-                assert "lr" in hp and float(hp["lr"]) > 0, (
-                    f"missing/invalid lr for {dataset}/{model}/{method}"
-                )
-                assert "attention_temperature" in hp, (
-                    f"missing attention_temperature for {dataset}/{model}/{method}"
-                )
-                assert "lambda_rank" in hp, (
-                    f"missing lambda_rank for {dataset}/{model}/{method}"
-                )
-                if method == "REC_CBM":
-                    for key in ("lambda_den", "lambda_spa"):
-                        assert key in hp, f"missing {key} for {dataset}/{model}/{method}"
-    check(True, f"hyperparams.json covers {len(datasets) * len(models) * 2} combos (CONCEPT_ENCODER + REC_CBM)")
+            hp = get_method_params(dataset, model, "CONCEPT_ENCODER")
+            assert "lr" in hp and float(hp["lr"]) > 0, (
+                f"missing/invalid lr for {dataset}/{model}"
+            )
+            assert "attention_temperature" in hp, (
+                f"missing attention_temperature for {dataset}/{model}"
+            )
+            assert "lambda_rank" in hp, (
+                f"missing lambda_rank for {dataset}/{model}"
+            )
+    check(True, f"hyperparams.json covers {len(datasets) * len(models)} combos (CONCEPT_ENCODER)")
 
     for dataset in datasets:
         for model in models:
@@ -118,7 +113,6 @@ def level2_models() -> None:
     from cbm.models.models import (
         GradePredictorMLP,
         build_concept_encoder,
-        build_rec_cbm,
     )
 
     K, C, Y, D, B, T = 8, 3, 6, 768, 2, 10
@@ -134,20 +128,6 @@ def level2_models() -> None:
     check(len(out) == K + 1, f"build_concept_encoder returns K+1={K + 1} tensors, got {len(out)}")
     check(out[0].shape == (B, Y), f"task logits shape = {(B, Y)}, got {tuple(out[0].shape)}")
     check(out[1].shape == (B, C), f"concept logits shape = {(B, C)}, got {tuple(out[1].shape)}")
-
-    me = build_rec_cbm(
-        num_concept_classes=C, num_task_classes=Y, num_concepts=K, hidden_dimension=D,
-    )
-    out_e = me(x, mask)
-    check(len(out_e) == K + 1, f"REC-CBM returns K+1={K + 1} tensors, got {len(out_e)}")
-    check(out_e[0].shape == (B, Y), f"REC-CBM task logits shape = {(B, Y)}, got {tuple(out_e[0].shape)}")
-
-    mu_post = me.concept_to_task_model.last_mu_post
-    check(mu_post is not None, "LCEC head populates last_mu_post after forward")
-    check(
-        tuple(mu_post.shape) == (B, K),
-        f"last_mu_post shape = {(B, K)}, got {tuple(mu_post.shape)}",
-    )
 
     # Residual head: correction is zero-initialised, so residual output ≡ base output.
     base = GradePredictorMLP(input_dim=K * C, num_task_classes=Y)

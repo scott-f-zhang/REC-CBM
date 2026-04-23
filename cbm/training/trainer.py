@@ -1,4 +1,4 @@
-"""REC-CBM training pipeline for CONCEPT_ENCODER and REC_CBM."""
+"""REC-CBM Stage I training pipeline (CONCEPT_ENCODER)."""
 import os
 from typing import Dict, Optional
 
@@ -11,13 +11,13 @@ from transformers import get_linear_schedule_with_warmup
 from ..data.essay import EssayDataset
 from ..data.mocha import MOCHADataset
 from ..data.qa import QADataset
-from ..models.models import build_concept_encoder, build_rec_cbm
+from ..models.models import build_concept_encoder
 from ..models.pretrained_loaders import load_model_and_tokenizer
 from ..utils import normalize_result, safe_model_name, set_seed
 from ..utils.hyperparams import get_method_params
 from .epoch_loops import evaluate_one_epoch, test_one_epoch, train_one_epoch
 
-VALID_METHODS = {"CONCEPT_ENCODER", "REC_CBM"}
+VALID_METHODS = {"CONCEPT_ENCODER"}
 
 _DATASET_CLASSES = {
     "qa": QADataset,
@@ -45,10 +45,10 @@ def _load_datasets(dataset: str, tokenizer, max_len: int, seed: int,
     )
 
 
-def _build_head(method: str, num_labels: int, num_concept_labels: int,
+def _build_head(num_labels: int, num_concept_labels: int,
                 num_each_concept_classes: int, hidden_size: int,
                 attention_temperature: float):
-    common = dict(
+    return build_concept_encoder(
         num_concept_classes=num_each_concept_classes,
         num_task_classes=num_labels,
         num_concepts=num_concept_labels,
@@ -56,11 +56,6 @@ def _build_head(method: str, num_labels: int, num_concept_labels: int,
         use_independent_channels=True,
         attention_temperature=attention_temperature,
         query_init_method="orthogonal",
-    )
-    if method == "REC_CBM":
-        return build_rec_cbm(**common, lcec_eps=1e-4)
-    return build_concept_encoder(
-        **common,
         is_bottleneck_mode=True,
         num_concept_classes_per_concept=num_each_concept_classes,
         use_relu=False,
@@ -108,11 +103,11 @@ def train_one(
     lambda_con: float = 1.0,
     lambda_task: float = 1.0,
 ) -> Dict:
-    """Train one model on one dataset end-to-end.
+    """Train Stage I CONCEPT_ENCODER on one (dataset, model).
 
     Method-specific hyperparameters (lr, attention_temperature, λ_rank,
-    λ_den, λ_spa, query_lr_multiplier) are read from ``config/hyperparams.json``
-    via :func:`get_method_params`; everything else is an explicit kwarg.
+    query_lr_multiplier) are read from ``config/hyperparams.json`` via
+    :func:`get_method_params`; everything else is an explicit kwarg.
 
     Returns a dict with keys ``task``, ``concept`` (both list of 2-tuples
     ``(acc, macro_f1)``) and ``best_epoch``.
@@ -126,9 +121,6 @@ def train_one(
     attention_temperature = float(hp["attention_temperature"])
     lambda_rank = float(hp["lambda_rank"])
     query_lr_multiplier = float(hp.get("query_lr_multiplier", 1.0))
-    enable_lcec = method == "REC_CBM"
-    lambda_den = float(hp.get("lambda_den", 0.1))
-    lambda_spa = float(hp.get("lambda_spa", 0.01))
 
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
@@ -150,7 +142,7 @@ def train_one(
     test_loader = DataLoader(test_ds, batch_size=batch_size,
                              num_workers=4, pin_memory=True, persistent_workers=True)
 
-    head = _build_head(method, num_labels, num_concept_labels,
+    head = _build_head(num_labels, num_concept_labels,
                        num_each_concept_classes, hidden_size, attention_temperature)
     model.to(device)
     head.to(device)
@@ -191,9 +183,6 @@ def train_one(
             use_independent_channels=True,
             freeze_base_model=freeze_base_model,
             verbose=verbose,
-            enable_lcec=enable_lcec,
-            lambda_den=lambda_den,
-            lambda_spa=lambda_spa,
         )
         metrics = evaluate_one_epoch(
             model, head, val_loader, device, criterion,

@@ -14,33 +14,28 @@ Requires Python 3.9+ and PyTorch with CUDA for GPU training.
 ## Usage
 
 ```bash
-# End-to-end on qa / gpt2
-python main.py --dataset qa --model gpt2 --mode e2e
-
 # Residual 2-stage on qa / gpt2 (auto-trains Stage I CONCEPT_ENCODER if absent)
-python main.py --dataset qa --model gpt2 --mode 2stage
+python main.py --dataset qa --model gpt2
 ```
 
 Supported values:
 
 - `--dataset {qa, essay, mocha}`
 - `--model {bert-base-uncased, gpt2, roberta-base, t5-base, facebook/bart-base}`
-- `--mode {e2e, 2stage, both}`
 - `--seed <int>` — default `123`
 
 Results are written to:
 
 ```
 data/cbm_results_<dataset>/seed_<seed>/
-  concept_encoder/<dataset>/result_<dataset>.csv   # Stage I (2stage only)
-  rec_cbm_e2e/<dataset>/result_<dataset>.csv       # e2e mode
-  rec_cbm_2stage/<dataset>/result_<dataset>.csv    # 2stage mode
+  concept_encoder/<dataset>/result_<dataset>.csv   # Stage I
+  rec_cbm_2stage/<dataset>/result_<dataset>.csv    # Stage II
 ```
 
-Per-(dataset, model, method) hyperparameters — learning rate, temperature,
-λ's, query LR multiplier — all live in `config/hyperparams.json` and are
-loaded automatically at train time via `cbm.utils.hyperparams.get_method_params`.
-Methods recognised there: `CONCEPT_ENCODER`, `REC_CBM`.
+Stage I hyperparameters (lr, attention_temperature, λ_rank, query_lr_multiplier)
+live in `config/hyperparams.json` and are loaded via
+`cbm.utils.hyperparams.get_method_params`. Stage II hyperparameters
+(lr, λ_den, λ_spa) live in `STAGE2_PARAMS` inside `cbm/training/lcec.py`.
 
 ---
 
@@ -60,22 +55,21 @@ Splits are bundled under `dataset/{qa,essay,mocha}/` and loaded via
 ## Repo Layout
 
 ```
-main.py                         # Single entry point — e2e or residual 2-stage
+main.py                         # Single entry point — residual 2-stage
 
 cbm/
-  config/defaults.py            # TrainingConfig
   models/models.py              # RubricAwareConceptEncoder, LCECHead, RecCBM,
-                                # build_concept_encoder, build_rec_cbm
+                                # build_concept_encoder
   models/lcec_residual.py       # LCECResidualHead (additive correction)
-  training/trainer.py           # train_one(), save_result_row()
+  training/trainer.py           # train_one(), save_result_row() — Stage I
   training/lcec.py              # run_stage2() — Stage II LCEC trainer
   training/epoch_loops.py       # train / evaluate / test per epoch
   utils/hyperparams.py          # hyperparams.json loader
 
 dataset/{qa,essay,mocha}/       # Train/dev/test splits
 cbm/data/{qa,essay,mocha}.py    # Torch datasets
-config/hyperparams.json         # Per-(dataset, model, method) hyperparameters
-                                # (lr, attention_temperature, λ_rank, λ_den, λ_spa)
+config/hyperparams.json         # Stage I hyperparameters per (dataset, model)
+                                # (lr, attention_temperature, λ_rank)
 data/cbm_results_<dataset>/     # Training result CSVs (gitignored)
 ```
 
