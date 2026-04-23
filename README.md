@@ -10,7 +10,12 @@
 
 Grading open-ended student responses with neural models typically trades interpretability for accuracy: a strong classifier offers no explanation for its grade, while a rubric-based interpretable system loses signal. Concept-bottleneck models (CBMs) close part of this gap by routing predictions through human-meaningful concepts, but existing CBMs are not rubric-aware — concept extractors ignore the structured criteria that human graders actually use, and the concept-to-grade mapping treats noisy concept estimates as if they were ground truth.
 
-**REC-CBM** addresses both issues. It introduces (a) a *Rubric-Aware Concept Encoder (RACE)* with per-concept attention queries over rubric-structured token representations, (b) an *Ordinal Pairwise Concept Calibration (OPCC)* objective that enforces the ordinal structure of rubric scores during concept learning, and (c) a *Latent Concept Error Correction (LCEC)* head that models each observed concept as a noisy measurement of a latent true concept and uses a Gaussian-posterior closed-form denoiser before the final grade classifier. The model is trained in two stages: Stage I fits the concept encoder; Stage II freezes Stage I and fits an additive residual LCEC correction.
+**REC-CBM** addresses both issues. It introduces 
+- (a) a *Rubric-Aware Concept Encoder (RACE)* with per-concept attention queries over rubric-structured token representations,
+- (b) an *Ordinal Pairwise Concept Calibration (OPCC)* objective that enforces the ordinal structure of rubric scores during concept learning, and
+- (c) a *Latent Concept Error Correction (LCEC)* head that models each observed concept as a noisy measurement of a latent true concept and uses a Gaussian-posterior closed-form denoiser before the final grade classifier.
+
+The model is trained in two stages: Stage I fits the concept encoder; Stage II freezes Stage I and fits an additive residual LCEC correction.
 
 <p align="center">
   <img src="assets/fig_1_1_grading_comparison.png" width="60%" />
