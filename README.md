@@ -29,7 +29,7 @@ Grading open-ended student responses with neural models typically trades interpr
 <p align="center">
   <img src="assets/fig_4_1_framework.png" width="100%" />
   <br/>
-  <em>The REC-CBM framework. (a) Rubric-Aware Concept Encoder, (b) Ordinal Pairwise Concept Calibration, (c) Latent Concept Error Correction.</em>
+  <em>The REC-CBM framework.</em>
 </p>
 
 ## 🗂️ Repository Layout
