@@ -101,14 +101,7 @@ We release only the **join keys + our concept annotations** on [Hugging Face](ht
 
 ## 📝 Citation
 
-```bibtex
-@article{reccbm2026,
-  title={REC-CBM: Rubric-aware Concept Encoder with Latent Concept Error Correction for Rubric-Graded Text Classification},
-  author={TBD},
-  journal={TBD},
-  year={2026}
-}
-```
+TBD
 
 ## License
 
