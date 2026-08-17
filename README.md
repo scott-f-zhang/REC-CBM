@@ -1,9 +1,10 @@
-# REC-CBM: Rubric-aware Concept Encoder with Latent Concept Error Correction for Rubric-Graded Text Classification
+# REC-CBM: Rubric-Aware Error-Correction Concept Bottleneck Models for Trustworthy Open-Ended Grading
 
 <p align="center">
-  <a href="TODO-paper-url"><img src="https://img.shields.io/badge/Paper-PDF-blue.svg" alt="Paper"></a>
-  <a href="TODO-arxiv-url"><img src="https://img.shields.io/badge/arXiv-TBD-b31b1b.svg" alt="arXiv"></a>
+  <a href="https://openreview.net/forum?id=JPcHSDoC3P"><img src="https://img.shields.io/badge/Paper-OpenReview-blue.svg" alt="Paper"></a>
+  <a href="https://arxiv.org/abs/2605.27402"><img src="https://img.shields.io/badge/arXiv-2605.27402-b31b1b.svg" alt="arXiv"></a>
   <a href="https://github.com/scott-f-zhang/REC-CBM"><img src="https://img.shields.io/badge/Code-GitHub-black.svg" alt="Code"></a>
+  <a href="https://huggingface.co/datasets/scott-f-zhang/REC-CBM"><img src="https://img.shields.io/badge/Dataset-Hugging%20Face-yellow.svg" alt="Dataset"></a>
 </p>
 
 ## 🔭 Introduction
@@ -16,7 +17,9 @@ Grading open-ended student responses with neural models typically trades interpr
   <em>General grading systems vs. CBM-based rubric grading.</em>
 </p>
 
-**REC-CBM** addresses both issues. It introduces: RACE, OPCC, and LCEC — detailed below. The model is trained in two stages: Stage I fits the concept encoder; Stage II freezes Stage I and fits an additive residual LCEC correction.
+
+**REC-CBM** addresses both issues through three key components: RACE, OPCC, and LCEC, which are described below. The model is trained in two stages: Stage I fits the concept encoder; Stage II freezes Stage I and fits an additive residual LCEC correction.
+
 
 <p align="center">
   <img src="assets/fig_4_1_framework.png" width="100%" />
@@ -24,7 +27,7 @@ Grading open-ended student responses with neural models typically trades interpr
   <em>The REC-CBM framework.</em>
 </p>
 
-## ✨ Contribution
+## ✨ Contributions
 
 - ⭐ **Rubric-Aware Concept Encoder (RACE)** — per-concept attention queries extract dedicated token-level evidence for each rubric criterion instead of routing every concept through a single pooled representation.
 - ⭐ **Ordinal Pairwise Concept Calibration (OPCC)** — a pairwise ranking loss `L_rank` added on top of per-concept classification `L_con` to enforce the ordinal structure of rubric scores.
@@ -97,18 +100,20 @@ REC-CBM is trained on three public grading benchmarks — Mohler short-answer (`
 | essay   | TC, UE, OC, GM, VA, SV, CTD, FR (8)     | 6 (0–5)      |
 | mocha   | RQ, IA, TG, CR, PQ, C, CC (7)           | 5 (0–4)      |
 
-We release only the **join keys + our concept annotations** on [Hugging Face](https://huggingface.co/datasets/scott-f-zhang/REC-CBM) (raw text cannot be redistributed under the upstream licenses). Download the upstream archives (ASAP 2.0 / Mohler / MOCHA) into `rawdata/` and run the release's `merge_with_raw.py` to rebuild the full train / dev / test splits expected by `cbm/data/{qa,essay,mocha}.py`.
+We release only the **join keys + our concept annotations** on [Hugging Face](https://huggingface.co/datasets/scott-f-zhang/REC-CBM) (raw text cannot be redistributed under the upstream licenses).
+Download the upstream archives (ASAP 2.0 / Mohler / MOCHA) into `rawdata/` and run the release's `merge_with_raw.py` to rebuild the full train / dev / test splits expected by `cbm/data/{qa,essay,mocha}.py`.
 
 ## 📝 Citation
 
-@inproceedings{
-zhao2026reccbm,
-title={{REC}-{CBM}: Rubric-Aware Error-Correction Concept Bottleneck Models for Trustworthy Open-Ended Grading},
-author={Chengshuai Zhao and Fan Zhang and Kumar Satvik Chaudhary and Yiwen Li and Lo Pang-Yun Ting and Ying-Chih Chen and Huan Liu},
-booktitle={Trustworthy AI for Good (AI4GOOD) Workshop @ ICML 2026},
-year={2026},
-url={https://openreview.net/forum?id=JPcHSDoC3P}
+```bibtex
+@inproceedings{zhao2026reccbm,
+  title     = {{REC}-{CBM}: Rubric-Aware Error-Correction Concept Bottleneck Models for Trustworthy Open-Ended Grading},
+  author    = {Chengshuai Zhao and Fan Zhang and Kumar Satvik Chaudhary and Yiwen Li and Lo Pang-Yun Ting and Ying-Chih Chen and Huan Liu},
+  booktitle = {Trustworthy AI for Good (AI4GOOD) Workshop @ ICML 2026},
+  year      = {2026},
+  url       = {https://openreview.net/forum?id=JPcHSDoC3P}
 }
+```
 
 ## License
 
