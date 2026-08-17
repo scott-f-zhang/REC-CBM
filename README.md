@@ -101,7 +101,14 @@ We release only the **join keys + our concept annotations** on [Hugging Face](ht
 
 ## 📝 Citation
 
-TBD
+@inproceedings{
+zhao2026reccbm,
+title={{REC}-{CBM}: Rubric-Aware Error-Correction Concept Bottleneck Models for Trustworthy Open-Ended Grading},
+author={Chengshuai Zhao and Fan Zhang and Kumar Satvik Chaudhary and Yiwen Li and Lo Pang-Yun Ting and Ying-Chih Chen and Huan Liu},
+booktitle={Trustworthy AI for Good (AI4GOOD) Workshop @ ICML 2026},
+year={2026},
+url={https://openreview.net/forum?id=JPcHSDoC3P}
+}
 
 ## License
 
